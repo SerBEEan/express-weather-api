@@ -8,7 +8,7 @@ module.exports.getCurrent = function(req, res) {
     const units = req.param('units') ?? 'celsius';
 
     if (!city) {
-        res.send('Не корректные параметры');
+        res.send('Введите город');
     }
 
     if (!SECRET_KEY) {
@@ -18,6 +18,11 @@ module.exports.getCurrent = function(req, res) {
     fetch(`${BASE_URL}/data/2.5/weather?q=${city}&appid=${SECRET_KEY}&units=${unitsMap[units]}`)
         .then((res) => res.json())
         .then((data) => {
+            if (data.cod === '404') {
+                res.send(data.message);
+                return;
+            }
+
             res.send({
                 city: data.name,
                 unit: units,

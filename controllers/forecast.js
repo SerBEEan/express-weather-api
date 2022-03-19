@@ -42,7 +42,7 @@ module.exports.getForecast = function(req, res) {
     fetch(`${BASE_URL}/geo/1.0/direct?q=${city}&appid=${SECRET_KEY}&limit=1`)
         .then((res) => res.json())
         .then((result) => {
-            if (result.cod === '400') {   
+            if (result.cod === '400' || result.length === 0) {   
                 res.send('Нет такого города');
                 return;
             }
