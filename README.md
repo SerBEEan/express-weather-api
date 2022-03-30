@@ -29,3 +29,12 @@ units (*"kelvin" | "celsius" | "fahrenheit"*) - единицы измерени�
 [**require**] city (*string*) - навание города \
 [**require**] dt (*number*) - timestamp \
 units (*"kelvin" | "celsius" | "fahrenheit"*) - единицы измерения, стандартно celsius
+
+## Docker
+Запустить по очереди из корневой папки проекта:
+```
+docker build . -t weather
+```
+```
+docker run -p 3000:3000 -d weather
+```
