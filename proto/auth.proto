@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+message RequestAuth {
+    string name = 1;
+}
+
+message ResponseAuth {
+    bool isAuth = 1;
+}
+
+service AuthService {
+    rpc Auth (RequestAuth) returns (ResponseAuth);
+}
