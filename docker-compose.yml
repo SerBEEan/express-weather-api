@@ -1,0 +1,14 @@
+version: "3"
+services:
+  weather:
+    build: ./
+    network_mode: weather_net
+    depends_on:
+      - auth
+    environment:
+      - "AUTH_HOST=express-weather-api_auth_1:8080"
+    ports:
+      - 3000:3000
+  auth:
+    build: ../python-weather-auth-service
+    network_mode: weather_net
