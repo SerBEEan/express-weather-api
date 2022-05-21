@@ -30,7 +30,7 @@ module.exports.getCurrent = function(req, res) {
     fetch(`${BASE_URL}/data/2.5/weather?q=${city}&appid=${SECRET_KEY}&units=${unitsMap[units]}`)
         .then((res) => res.json())
         .then((data) => {
-            if (data.cod === '404') {
+            if (data.cod === '404' || data.main === undefined) {
                 res.send(data.message);
                 return;
             }

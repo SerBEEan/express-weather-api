@@ -4,11 +4,13 @@ services:
     build: ../
     network_mode: weather_net
     container_name: weather
-    command: [ "npm", "run", "dev" ]
+    # для разработки
+    # command: [ "npm", "run", "dev" ]
     ports:
       - 3000:3000
-    volumes:
-      - ../:/usr/src/app/
+    # для разработки
+    # volumes:
+    #   - ../:/usr/src/app/
     depends_on:
       - cluster
   cluster:

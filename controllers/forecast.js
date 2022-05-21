@@ -58,6 +58,11 @@ module.exports.getForecast = function(req, res) {
                 return;
             }
 
+            if (!Array.isArray(result)) {
+                res.send(result.message);
+                return;
+            }
+
             const [{ lat, lon, name }] = result;
         
             fetch(`${BASE_URL}/data/2.5/onecall?&appid=${SECRET_KEY}&lat=${lat}&lon=${lon}&exclude=current,minutely,hourly,alerts&units=${unitsMap[units]}`)
