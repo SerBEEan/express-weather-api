@@ -1,4 +1,5 @@
 const fetch = require('node-fetch');
+const { setValue, setManyValue } = require('../redis');
 const { unit: unitsMap } = require('../enums/unit');
 
 const { API_BASE: BASE_URL, SECRET_KEY } = process.env;
@@ -8,9 +9,18 @@ module.exports.getForecast = function(req, res) {
     const city = req.param('city');
     const dt = req.param('dt');
     const units = req.param('units') ?? 'celsius';
-
+    
     if (!city) {
         res.send('Введите город');
+        return;
+    }
+
+    if (res.locals.value !== null && res.locals.value !== undefined) {
+        res.send({
+            city,
+            unit: units,
+            temperature: Number(res.locals.value),
+        });
         return;
     }
 
@@ -21,6 +31,7 @@ module.exports.getForecast = function(req, res) {
 
     if (!SECRET_KEY) {
         res.send('Введите секретный ключ');
+        return;
     }
 
     const timestamp = dt * 1000;
@@ -59,14 +70,28 @@ module.exports.getForecast = function(req, res) {
                         return;
                     }
 
-                    res.send(JSON.stringify({
+                    setValue(`forecast-${city.toLowerCase()}-${dt}`, Math.round(forecast.temp.day));
+
+                    res.send({
                         city: name,
                         unit: 'celsius',
                         temperature: Math.round(forecast.temp.day),
-                    }));
+                    });
                 });
         
         });
+}
+
+module.exports.putForecast = async function(req, res) {
+    const data = req.body;
+    const prepareData = {};
+
+    for (const key in data) {
+        prepareData[`forecast-${key.toLowerCase()}-${data[key].time}`] = Number(data[key].temp);
+    }
+
+    await setManyValue(prepareData);
+    res.status(200).send();
 }
 
 function getForecastByDay(forecasts, day) {
